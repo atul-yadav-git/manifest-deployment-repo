@@ -52,16 +52,18 @@ pipeline {
         }
         steps {
             withCredentials([string(credentialsId: 'github-credentials', variable: 'GITHUB_TOKEN')]) {
-                sh '''
-                    git config user.email "103098829+atul-yadav-git@users.noreply.github.com"
-                    git config user.name "Atul yadav"
-                    git clean -f -d
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-                '''
+                script {
+                    def IMAGE_TAG = sh(script: 'echo $BUILD_NUMBER', returnStdout: true).trim()
+                    sh '''
+                        git config user.email "103098829+atul-yadav-git@users.noreply.github.com"
+                        git config user.name "Atul yadav"
+                        BUILD_NUMBER=${BUILD_NUMBER}
+                        sed -i "s/atuldockerhub/ultimate-cicd:{{IMAGE_TAG}}/atuldockerhub/ultimate-cicd:${IMAGE_TAG}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                        git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                        git commit -m "Update deployment image to version ${IMAGE_TAG}"
+                        git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                    '''
+                }
             }
         }
     }
