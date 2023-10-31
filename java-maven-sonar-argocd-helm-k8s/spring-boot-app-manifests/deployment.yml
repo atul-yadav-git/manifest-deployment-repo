@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: spring-boot-app
-        image: atuldockerhub/ultimate-cicd:{{IMAGE_TAG}} // dynamically changing image tag
+        image: atuldockerhub/ultimate-cicd: // dynamically changing image tag
         ports:
         - containerPort: 8080
