@@ -16,7 +16,6 @@ spec:
     spec:
       containers:
       - name: spring-boot-app
-       # dynamically changing image tag using current and latest image tag and sed command in jenkins file
-        image: atuldockerhub/ultimate-cicd:21
+        image: atuldockerhub/ultimate-cicd:45
         ports:
         - containerPort: 8080
